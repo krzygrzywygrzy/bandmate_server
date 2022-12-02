@@ -1,11 +1,11 @@
 import express from "express";
-import { config as dotenv } from "dotenv";
+import * as dotenv from "dotenv";
 import { connect } from "mongoose";
-import { Routes, musicianRouter } from "./router";
+import { Routes, musicianRouter, authRouter } from "./router";
 
 const main = async () => {
   try {
-    dotenv();
+    dotenv.config();
 
     await connect(process.env.DB_CONNECTION_STRING ?? "");
 
@@ -14,6 +14,7 @@ const main = async () => {
 
     app.use(express.json());
     app.use(Routes.MUSICIANS, musicianRouter);
+    app.use(Routes.AUTH, authRouter);
 
     app.listen(port, () => {
       console.log(`server is running on port ${port}`);

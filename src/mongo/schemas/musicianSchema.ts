@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 import { IMusician } from "../../models/musician";
-import { AuthErrors } from "../../router/auth/types";
+import { AuthErrors } from "../../router/user/types";
 import { Collections } from "../types";
 import { emailRegex, saltRounds, strongPasswordRegex } from "./utils";
 import * as bcrypt from "bcrypt";
@@ -22,6 +22,12 @@ const musicianSchema = new Schema<IMusician>({
     type: String,
     validate: [validatePassword, AuthErrors.PASSWORD_TO_WEAK],
   },
+  instruments: {
+    type: [String],
+  },
+  genres: {
+    type: [String],
+  },
 });
 
 musicianSchema.pre("save", async function (next) {
@@ -35,6 +41,8 @@ musicianSchema.pre("save", async function (next) {
   const hashedPassword = await bcrypt.hash(password, salt);
 
   this.password = hashedPassword;
+  this.instruments = [];
+  this.genres = [];
 
   next();
 });

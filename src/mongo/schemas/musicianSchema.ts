@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 import { IMusician } from "../../models/musician";
 import { AuthErrors } from "../../router/user/types";
 import { Collections } from "../types";
@@ -28,6 +28,9 @@ const musicianSchema = new Schema<IMusician>({
   genres: {
     type: [String],
   },
+  matches: {
+    type: [Types.ObjectId],
+  },
 });
 
 musicianSchema.pre("save", async function (next) {
@@ -43,7 +46,7 @@ musicianSchema.pre("save", async function (next) {
   this.password = hashedPassword;
   this.instruments = [];
   this.genres = [];
-
+  this.matches = [];
   next();
 });
 

@@ -4,6 +4,7 @@ export enum UserRoutes {
   REGISTER = "/register",
   LOGIN = "/login",
   POST_REGISTER = "/postRegister",
+  YOU = "/you",
 }
 
 export enum AuthErrors {

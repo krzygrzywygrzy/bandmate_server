@@ -85,3 +85,8 @@ export const postRegisterUpdate = async (
     handleErrors(res, error);
   }
 };
+
+export const you = (req: Request, res: Response) => {
+  const { you } = req;
+  res.status(200).send({ you });
+};

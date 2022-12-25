@@ -1,6 +1,7 @@
 export enum MusicianRoutes {
   GET = "/",
   LIKE = "/like",
+  MATCHES = "/matches",
 }
 
 export enum MusicianMessages {

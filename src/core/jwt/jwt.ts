@@ -12,6 +12,6 @@ export const jwtSecretCheck = () => {
 
 const getJwtString = () => process.env.JWT_STRING!;
 
-export const sign = (_id: Types.ObjectId) => jwt.sign({ _id }, getJwtString());
+export const sign = (_id: string) => jwt.sign({ _id }, getJwtString());
 
 export const decode = (token: string) => jwt.verify(token, getJwtString());

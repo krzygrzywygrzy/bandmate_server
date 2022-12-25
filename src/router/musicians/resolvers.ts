@@ -7,6 +7,7 @@ import {
 } from "../../mongo/utils";
 import { CommonErrors } from "../types";
 import { MusicianMessages } from "./types";
+import { Match } from "../../mongo/schemas/matchSchema";
 
 export const getMusicians = async (req: Request, res: Response) => {
   try {
@@ -31,11 +32,6 @@ export const like = async (
     const { _id: yourId } = req.you;
     const { _id: likedId } = req.body;
 
-    if (!yourId) {
-      res.status(404).send({ error: CommonErrors.NOT_FOUND });
-      return;
-    }
-
     const liked = await Musician.findById(likedId);
     if (!liked) {
       res.status(404).send({ error: CommonErrors.NOT_FOUND });
@@ -43,21 +39,25 @@ export const like = async (
     }
     const { likes } = liked;
 
-    if (likes.includes(yourId)) {
+    if (likes.includes(yourId!)) {
       //it's a match
       const session = await Musician.startSession();
+
       const match = await session.withTransaction(async () => {
+        const { _id } = await Match.create({ musicians: [yourId, likedId] });
+
         await Musician.findByIdAndUpdate(yourId, {
-          $addToSet: { matches: likedId },
+          $addToSet: { matches: _id, likes: likedId },
         });
 
         return await Musician.findByIdAndUpdate(likedId, {
-          $addToSet: { matches: yourId },
+          $addToSet: { matches: _id },
         }).select({
           ...excludePasswordAndVersion,
           ...excludeLikesAndMatches,
         });
       });
+
       session.endSession();
 
       res.status(200).send({ message: MusicianMessages.MATCH, match });

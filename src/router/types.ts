@@ -2,6 +2,7 @@ export enum Routes {
   MUSICIANS = "/musicians",
   AUTH = "/auth",
   USER = "/user",
+  MESSAGES = "/messages",
 }
 
 export enum CommonErrors {
@@ -11,4 +12,5 @@ export enum CommonErrors {
   NO_JWT_SECRET = "NO_JWT_SECRET",
   NOT_FOUND = "NOT_FOUND",
   ITEM_ALREADY_EXISTS = "ITEM_ALREADY_EXISTS",
+  FORBIDDEN = "FORBIDDEN",
 }

@@ -1,7 +1,7 @@
 import express from "express";
 import * as dotenv from "dotenv";
 import { connect } from "mongoose";
-import { Routes, musicianRouter, userRouter } from "./router";
+import { Routes, messagesRouter, musicianRouter, userRouter } from "./router";
 import { jwtSecretCheck } from "./core/jwt/jwt";
 
 const main = async () => {
@@ -17,6 +17,7 @@ const main = async () => {
     app.use(express.json());
     app.use(Routes.USER, userRouter);
     app.use(Routes.MUSICIANS, musicianRouter);
+    app.use(Routes.MESSAGES, messagesRouter);
 
     app.listen(port, () => {
       console.log(`server is running on port ${port}`);

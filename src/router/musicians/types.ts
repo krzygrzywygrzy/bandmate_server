@@ -1,6 +1,7 @@
 export enum MusicianRoutes {
   GET = "/",
   LIKE = "/like",
+  DISLIKE = "/dislike",
   MATCHES = "/matches",
 }
 

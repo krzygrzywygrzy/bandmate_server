@@ -1,25 +1,26 @@
 import { Request, Response } from "express";
-import { IMusician } from "../../models/musician";
 import { Musician } from "../../mongo/schemas";
-import { AuthErrors, LogInInput, PostRegisterInput } from "./types";
+import { AuthErrors, LogInInput, RegisterInput } from "./types";
 import * as jwt from "../../core/jwt";
 import * as bcrypt from "bcrypt";
 import { handleErrors } from "../../mongo/utils";
 
 export const register = async (
-  req: Request<unknown, unknown, IMusician>,
+  req: Request<unknown, unknown, RegisterInput>,
   res: Response
 ) => {
   try {
-    const musician = new Musician({ ...req.body });
+    const body = RegisterInput.parse(req.body);
+
+    const musician = new Musician({ ...body });
     const document = await musician.save();
 
-    const { _id, instruments, genres } = document;
+    const { _id } = document;
 
     const token = jwt.sign(_id);
 
     res.status(201).send({
-      musician: { ...req.body, _id, instruments, genres },
+      musician: { ...req.body, _id },
       token,
     });
   } catch (error) {
@@ -53,34 +54,10 @@ export const logIn = async (
       return;
     }
 
-    const { _id, name, genres, instruments } = document;
+    const { _id, name, about } = document;
     const token = jwt.sign(_id);
 
-    res
-      .status(200)
-      .send({ musician: { _id, name, genres, instruments }, token });
-  } catch (error) {
-    handleErrors(res, error);
-  }
-};
-
-export const postRegisterUpdate = async (
-  req: Request<unknown, unknown, PostRegisterInput>,
-  res: Response
-) => {
-  try {
-    const { body, you } = req;
-
-    const { genres, instruments } = PostRegisterInput.parse(body);
-
-    await Musician.findByIdAndUpdate(you._id, {
-      $addToSet: {
-        instruments: { $each: instruments },
-        genres: { $each: genres },
-      },
-    });
-
-    res.status(200).send({ ok: true });
+    res.status(200).send({ musician: { _id, name, about }, token });
   } catch (error) {
     handleErrors(res, error);
   }

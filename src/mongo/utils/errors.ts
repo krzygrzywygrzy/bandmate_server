@@ -32,7 +32,5 @@ export const handleErrors = (res: Response, error: unknown) => {
     return;
   }
 
-  console.log(error);
-
   res.status(500).send({ error: CommonErrors.UNKNOWN_ERROR });
 };

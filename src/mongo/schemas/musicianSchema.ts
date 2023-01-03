@@ -11,25 +11,28 @@ const validatePassword = (password: string) =>
   strongPasswordRegex.test(password);
 
 const musicianSchema = new Schema<IMusician>({
-  name: { type: String, required: true },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    validate: [validateEmail, AuthErrors.WRONG_EMAIL_FORMAT],
+  name: { firstName: { type: String, required: true } },
+  contact: {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      validate: [validateEmail, AuthErrors.WRONG_EMAIL_FORMAT],
+    },
+    phoneNumber: { number: String, prefix: String, required: false },
   },
   password: {
     type: String,
     validate: [validatePassword, AuthErrors.PASSWORD_TO_WEAK],
   },
-  instruments: {
-    type: [String],
+  about: {
+    instruments: { type: [String], default: [] },
+    genres: { type: [String], default: [] },
   },
-  genres: {
-    type: [String],
-  },
-  matches: {
-    type: [Types.ObjectId],
+  swipes: {
+    likes: { type: [String], default: [] },
+    dislikes: { type: [String], default: [] },
+    matches: { type: [String], default: [] },
   },
 });
 
@@ -44,9 +47,7 @@ musicianSchema.pre("save", async function (next) {
   const hashedPassword = await bcrypt.hash(password, salt);
 
   this.password = hashedPassword;
-  this.instruments = [];
-  this.genres = [];
-  this.matches = [];
+
   next();
 });
 

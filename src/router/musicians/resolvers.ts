@@ -11,33 +11,38 @@ import { Match } from "../../mongo/schemas/matchSchema";
 
 export const getMusicians = async (req: Request, res: Response) => {
   try {
-    const { _id, genres } = req.you;
+    const {
+      _id,
+      about: { genres },
+    } = req.you;
 
-    const response = await Musician.find({
+    const musicians = await Musician.find({
       _id: { $ne: _id },
-      genres: { $in: genres },
+      "about.genres": { $in: genres },
     }).select(excludePasswordAndVersion);
 
-    res.status(200).send(response);
+    res.status(200).send({ musicians });
   } catch (error) {
     handleErrors(res, error);
   }
 };
 
 export const like = async (
-  req: Request<unknown, unknown, { _id: string }>,
+  req: Request<unknown, unknown, { id: string }>,
   res: Response
 ) => {
   try {
     const { _id: yourId } = req.you;
-    const { _id: likedId } = req.body;
+    const { id: likedId } = req.body;
 
     const liked = await Musician.findById(likedId);
     if (!liked) {
       res.status(404).send({ error: CommonErrors.NOT_FOUND });
       return;
     }
-    const { likes } = liked;
+    const {
+      swipes: { likes },
+    } = liked;
 
     if (likes.includes(yourId!)) {
       //it's a match
@@ -47,11 +52,11 @@ export const like = async (
         const { _id } = await Match.create({ musicians: [yourId, likedId] });
 
         await Musician.findByIdAndUpdate(yourId, {
-          $addToSet: { matches: _id, likes: likedId },
+          $addToSet: { "swipes.matches": _id, "swipes.likes": likedId },
         });
 
         return await Musician.findByIdAndUpdate(likedId, {
-          $addToSet: { matches: _id },
+          $addToSet: { "swipes.matches": _id },
         }).select({
           ...excludePasswordAndVersion,
           ...excludeLikesAndMatches,
@@ -65,8 +70,30 @@ export const like = async (
       return;
     }
 
-    await Musician.findByIdAndUpdate(yourId, { $addToSet: { likes: likedId } });
+    await Musician.findByIdAndUpdate(yourId, {
+      $addToSet: { "swipes.likes": likedId },
+    });
     res.status(200).send({ message: MusicianMessages.LIKED });
+  } catch (error) {
+    handleErrors(res, error);
+  }
+};
+
+export const dislike = async (
+  req: Request<unknown, unknown, { id: string }>,
+  res: Response
+) => {
+  try {
+    const {
+      body: { id: dislikeId },
+      you: { _id },
+    } = req;
+
+    await Musician.findByIdAndUpdate(_id, {
+      $addToSet: { "swipes.dislikes": dislikeId },
+    });
+
+    res.status(200).send({ ok: true });
   } catch (error) {
     handleErrors(res, error);
   }
@@ -74,8 +101,10 @@ export const like = async (
 
 export const getYourMatches = async (req: Request, res: Response) => {
   try {
-    const { you } = req;
-    const matches = await Musician.findById({ _id: { $in: you.matches } });
+    const {
+      you: { swipes },
+    } = req;
+    const matches = await Match.find({ _id: { $in: swipes.matches } });
     res.status(200).send({ matches });
   } catch (error) {
     handleErrors(res, error);

@@ -2,7 +2,7 @@ import express from "express";
 import * as dotenv from "dotenv";
 import { connect } from "mongoose";
 import { Routes, messagesRouter, musicianRouter, userRouter } from "./router";
-import { jwtSecretCheck } from "./core/jwt/jwt";
+import { jwtSecretCheck } from "./common/jwt/jwt";
 
 const main = async () => {
   try {

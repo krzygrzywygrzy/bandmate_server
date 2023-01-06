@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { CommonErrors } from "../types";
-import * as jwt from "../../core/jwt";
+import { CommonErrors } from "../../router/types";
+import * as jwt from "../jwt";
 import { JwtPayload } from "jsonwebtoken";
 import { Musician } from "../../mongo/schemas";
 import { excludePasswordAndVersion } from "../../mongo/utils";

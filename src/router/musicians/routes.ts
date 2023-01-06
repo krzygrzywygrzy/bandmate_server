@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { isAuthenticated } from "../auth/resolvers";
+import { isAuthenticated } from "../../common/auth";
 import { getMusicians, getYourMatches, like } from "./resolvers";
 import { MusicianRoutes } from "./types";
 

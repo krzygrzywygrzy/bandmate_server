@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Musician } from "../../mongo/schemas";
 import { AuthErrors, LogInInput, RegisterInput } from "./types";
-import * as jwt from "../../core/jwt";
+import * as jwt from "../../common/jwt";
 import * as bcrypt from "bcrypt";
 import { handleErrors } from "../../mongo/utils";
 

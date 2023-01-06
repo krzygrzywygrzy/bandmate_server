@@ -1,6 +1,6 @@
-import { Schema, model } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 import { IMusician } from "../../models/musician";
-import { AuthErrors } from "../../router/auth/types";
+import { AuthErrors } from "../../router/user/types";
 import { Collections } from "../types";
 import { emailRegex, saltRounds, strongPasswordRegex } from "./utils";
 import * as bcrypt from "bcrypt";
@@ -11,16 +11,29 @@ const validatePassword = (password: string) =>
   strongPasswordRegex.test(password);
 
 const musicianSchema = new Schema<IMusician>({
-  name: { type: String, required: true },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    validate: [validateEmail, AuthErrors.WRONG_EMAIL_FORMAT],
+  name: { firstName: { type: String, required: true } },
+  contact: {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      validate: [validateEmail, AuthErrors.WRONG_EMAIL_FORMAT],
+    },
+    phoneNumber: { number: String, prefix: String, required: false },
   },
   password: {
     type: String,
     validate: [validatePassword, AuthErrors.PASSWORD_TO_WEAK],
+  },
+  about: {
+    instruments: { type: [String], default: [] },
+    genres: { type: [String], default: [] },
+    description: { type: String },
+  },
+  swipes: {
+    likes: { type: [String], default: [] },
+    dislikes: { type: [String], default: [] },
+    matches: { type: [String], default: [] },
   },
 });
 

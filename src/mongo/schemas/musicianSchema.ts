@@ -28,6 +28,7 @@ const musicianSchema = new Schema<IMusician>({
   about: {
     instruments: { type: [String], default: [] },
     genres: { type: [String], default: [] },
+    description: { type: String },
   },
   swipes: {
     likes: { type: [String], default: [] },

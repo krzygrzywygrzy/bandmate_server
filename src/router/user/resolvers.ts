@@ -35,7 +35,7 @@ export const logIn = async (
   try {
     const { email, password } = LogInInput.parse(req.body);
 
-    const document = await Musician.findOne({ email }).select({
+    const document = await Musician.findOne({ "contact.email": email }).select({
       __v: 0,
     });
 
@@ -54,10 +54,10 @@ export const logIn = async (
       return;
     }
 
-    const { _id, name, about } = document;
+    const { _id, name, about, contact } = document;
     const token = jwt.sign(_id);
 
-    res.status(200).send({ musician: { _id, name, about }, token });
+    res.status(200).send({ musician: { _id, name, about, contact }, token });
   } catch (error) {
     handleErrors(res, error);
   }

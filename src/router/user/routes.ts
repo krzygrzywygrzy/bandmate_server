@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { isAuthenticated } from "../../common/auth";
 import { register, logIn, you } from "./resolvers";
 import { UserRoutes } from "./types";
+import { isAuthenticated } from "../../common/auth";
 
 const userRouter = Router();
 

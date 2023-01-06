@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { isAuthenticated } from "../../common/auth";
 import { getMusicians, getYourMatches, like } from "./resolvers";
 import { MusicianRoutes } from "./types";
+import { isAuthenticated } from "../../common/auth";
 
 const musicianRouter = Router();
 

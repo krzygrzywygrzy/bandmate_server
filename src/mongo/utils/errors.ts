@@ -14,8 +14,6 @@ export const mapValidationError = (error: Error.ValidationError) => {
 };
 
 export const handleErrors = (res: Response, error: unknown) => {
-  console.log(error);
-
   if ((error as Error).message.includes(MongoErrorCodes.DUPLICATE)) {
     res.status(400).send({ error: CommonErrors.ITEM_ALREADY_EXISTS });
     return;

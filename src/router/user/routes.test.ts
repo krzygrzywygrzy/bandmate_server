@@ -2,13 +2,16 @@ import * as jwt from "../../common/jwt";
 import * as bcrypt from "bcrypt";
 import { CommonErrors } from "../types";
 import { AuthErrors, UserRoutes } from "./types";
-import { dbConnect, dbDisconnect, musiciansMock } from "../../test_utils";
+import {
+  authHeader,
+  dbConnect,
+  dbDisconnect,
+  musiciansMock,
+} from "../../test_utils";
 import request from "supertest";
 import { userRouter } from "./routes";
 import express from "express";
 import { Musician } from "../../mongo/schemas";
-
-const authHeader = { Authorization: "Bearer token" };
 
 const mockedTocken = "TOKEN";
 jest.mock("../../common/jwt");
@@ -18,7 +21,7 @@ mockedJwt.sign.mockReturnValue(mockedTocken);
 jest.mock("bcrypt");
 const mockedBcrypt = bcrypt as jest.Mocked<typeof bcrypt>;
 
-describe("user router", () => {
+describe("User Routes", () => {
   const app = express();
   app.use(express.json());
   app.use("/", userRouter);
